@@ -43,8 +43,15 @@
 
             let html = '';
             leads.forEach((lead) => {
-                const isHot = lead.leadTemp.includes('Hot');
-                const badgeColor = isHot ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+                let badgeColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'; // Standard 🟢
+                if (lead.leadTemp && lead.leadTemp.includes('Hot')) {
+                    badgeColor = 'bg-amber-500/10 text-amber-400 border-amber-500/30'; // Hot 🔥
+                } else if (lead.leadTemp && lead.leadTemp.includes('Warm')) {
+                    badgeColor = 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30'; // Warm 🟡
+                }
+
+                // Fallback if older leads didn't have a reason saved
+                const reasonText = lead.leadReason || "Standard lead scoring based on initial checkup selections.";
 
                 html += `
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
@@ -53,12 +60,17 @@
                                 <span class="text-xs text-slate-500">${lead.timestamp}</span>
                                 <h3 class="text-lg font-bold text-white">${lead.name}</h3>
                             </div>
-                            <span class="px-3 py-1 rounded-full text-xs font-bold border ${badgeColor}">${lead.leadTemp}</span>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold border ${badgeColor}">${lead.leadTemp || 'Standard Lead 🟢'}</span>
                         </div>
 
                         <p class="text-slate-300 text-sm leading-relaxed bg-slate-950/50 p-3.5 rounded-xl border border-slate-800/60">
                             Hi Melanie, I've prepared this brief for <strong>${lead.name}</strong>. They are in the <strong>${lead.lifeStage.toLowerCase()}</strong> stage, earning roughly <strong>${lead.incomeRange}</strong>. Their primary focus is <strong>${lead.primaryObjective.toLowerCase()}</strong>, with <strong>${lead.dependentsCount}</strong> dependents. Health status is noted as <strong>${lead.healthStatus.toLowerCase()}</strong>.
                         </p>
+
+                        <div class="bg-slate-950/80 px-3.5 py-2 rounded-xl border border-slate-800/40 text-xs text-slate-400 flex items-center gap-2">
+                            <span class="text-corporate-accent font-bold">💡 Why this rating:</span>
+                            <span>${reasonText}</span>
+                        </div>
 
                         <div class="flex flex-wrap gap-4 text-xs pt-1">
                             <span class="text-slate-400">Phone: <a href="tel:${lead.phone}" class="text-teal-400 font-semibold">${lead.phone}</a></span>
