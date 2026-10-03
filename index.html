@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melanie's CRM Briefs | DreamCatcher Financial Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="h-full bg-slate-950 text-slate-100 p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto space-y-6">
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
+            <div>
+                <h1 class="text-2xl font-bold text-white">Client Briefs CRM</h1>
+                <p class="text-xs text-slate-400">DreamCatcher Financial Solutions — Melanie Banteah</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="clearLeads()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 transition-all">Clear All Briefs</button>
+                <a href="index.html" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold rounded-xl transition-all">← Back to Quiz</a>
+            </div>
+        </header>
+
+        <div id="leads-container" class="space-y-4">
+            <!-- Dynamically populated briefs -->
+        </div>
+    </div>
+
+    <script>
+        function loadLeads() {
+            const container = document.getElementById('leads-container');
+            const leads = JSON.parse(localStorage.getItem('dcfs_leads') || '[]');
+
+            if (leads.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 bg-slate-900/50 rounded-2xl border border-slate-800/80">
+                        <p class="text-slate-400 text-sm">No client briefs received yet.</p>
+                        <p class="text-xs text-slate-500 mt-1">Submit a test run through your quiz page to see briefs appear here instantly.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            leads.forEach((lead) => {
+                const isHot = lead.leadTemp.includes('Hot');
+                const badgeColor = isHot ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+
+                html += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800 pb-3">
+                            <div>
+                                <span class="text-xs text-slate-500">${lead.timestamp}</span>
+                                <h3 class="text-lg font-bold text-white">${lead.name}</h3>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold border ${badgeColor}">${lead.leadTemp}</span>
+                        </div>
+
+                        <p class="text-slate-300 text-sm leading-relaxed bg-slate-950/50 p-3.5 rounded-xl border border-slate-800/60">
+                            Hi Melanie, I've prepared this brief for <strong>${lead.name}</strong>. They are in the <strong>${lead.lifeStage.toLowerCase()}</strong> stage, earning roughly <strong>${lead.incomeRange}</strong>. Their primary focus is <strong>${lead.primaryObjective.toLowerCase()}</strong>, with <strong>${lead.dependentsCount}</strong> dependents. Health status is noted as <strong>${lead.healthStatus.toLowerCase()}</strong>.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4 text-xs pt-1">
+                            <span class="text-slate-400">Phone: <a href="tel:${lead.phone}" class="text-teal-400 font-semibold">${lead.phone}</a></span>
+                            <span class="text-slate-400">Email: <a href="mailto:${lead.email}" class="text-teal-400 underline">${lead.email}</a></span>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function clearLeads() {
+            if (confirm('Are you sure you want to clear your local CRM briefs?')) {
+                localStorage.removeItem('dcfs_leads');
+                loadLeads();
+            }
+        }
+
+        loadLeads();
+    </script>
+</body>
+</html>
