@@ -50,8 +50,7 @@
                     badgeColor = 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30'; // Warm 🟡
                 }
 
-                // Fallback if older leads didn't have a reason saved
-                const reasonText = lead.leadReason || "Standard lead scoring based on initial checkup selections.";
+                const reasonText = lead.leadReason || "Situation overview derived from initial checkup selections.";
 
                 html += `
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
@@ -67,9 +66,9 @@
                             Hi Melanie, I've prepared this brief for <strong>${lead.name}</strong>. They are in the <strong>${lead.lifeStage.toLowerCase()}</strong> stage, earning roughly <strong>${lead.incomeRange}</strong>. Their primary focus is <strong>${lead.primaryObjective.toLowerCase()}</strong>, with <strong>${lead.dependentsCount}</strong> dependents. Health status is noted as <strong>${lead.healthStatus.toLowerCase()}</strong>.
                         </p>
 
-                        <div class="bg-slate-950/80 px-3.5 py-2 rounded-xl border border-slate-800/40 text-xs text-slate-400 flex items-center gap-2">
-                            <span class="text-corporate-accent font-bold">💡 Why this rating:</span>
-                            <span>${reasonText}</span>
+                        <div class="bg-slate-950/80 px-3.5 py-2.5 rounded-xl border border-slate-800/40 text-xs text-slate-300 flex items-start gap-2">
+                            <span class="text-teal-400 font-bold whitespace-nowrap">💡 Why this rating:</span>
+                            <span class="leading-relaxed">${reasonText}</span>
                         </div>
 
                         <div class="flex flex-wrap gap-4 text-xs pt-1">
